@@ -6,7 +6,7 @@ on:
 
 jobs:
   chicagocrashes-post:
-    runs-on: Windows-latest
+    runs-on: windows-latest
     env:
       TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
       TWITTER_API_KEY_SECRET: ${{ secrets.TWITTER_API_KEY_SECRET }}
