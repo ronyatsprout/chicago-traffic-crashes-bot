@@ -911,29 +911,6 @@
       "Hash": "7ce2733a9826b3aeb1775d56fd305472",
       "Requirements": []
     },
-    "mapview": {
-      "Package": "mapview",
-      "Version": "2.10.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "70cc642e96759a1b81f7528a46aeb7a7",
-      "Requirements": [
-        "base64enc",
-        "htmltools",
-        "htmlwidgets",
-        "lattice",
-        "leafem",
-        "leaflet",
-        "leafpop",
-        "png",
-        "raster",
-        "scales",
-        "servr",
-        "sf",
-        "sp",
-        "webshot"
-      ]
-    },
     "markdown": {
       "Package": "markdown",
       "Version": "1.1",
