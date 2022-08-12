@@ -1,4 +1,7 @@
-install.packages("sf", configure.args = "--with-proj-lib=/usr/local/lib/")
+install.packages("rgeos", repos="http://R-Forge.R-project.org", type="source")
+install.packages("rgdal", repos="http://R-Forge.R-project.org", type="source")
+library(devtools)
+install_github("r-spatial/sf", configure.args = "--with-proj-lib=/usr/local/lib/")
 library(RSocrata)
 library(tidyverse)
 library(ggplot2)
