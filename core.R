@@ -18,6 +18,7 @@ library(rtweet)
 install_github("hunzikp/MapColoring")
 library(MapColoring)
 library(data.table)
+library(rmarkdown)
 
 
 dateQueryString <- paste0("crash_date between '",ymd(today()-2), "' and '", ymd(today()-1),"'")

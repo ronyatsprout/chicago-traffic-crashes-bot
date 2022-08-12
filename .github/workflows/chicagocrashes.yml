@@ -21,6 +21,6 @@ jobs:
          export CPPFLAGS="-I/usr/local/opt/libpq/include"
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          packages: RSocrata, tidyverse, ggplot2, lubridate, leaflet, webshot2, viridis, rgeos, leaflet, colorspace, leaflegend, rtweet, devtools, data.table
+          packages: RSocrata, tidyverse, ggplot2, lubridate, leaflet, webshot2, viridis, rgeos, leaflet, colorspace, leaflegend, rtweet, devtools, data.table, rmarkdown
       - name: Create and post tweet
         run: Rscript core.R
