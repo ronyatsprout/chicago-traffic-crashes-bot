@@ -15,6 +15,7 @@ library(leaflet)
 library(colorspace)
 library(leaflegend)
 library(rtweet)
+install_github("hunzikp/MapColoring")
 library(MapColoring)
 
 
