@@ -1,6 +1,6 @@
 Package: chicagotrafficbots
 Description: Bot for reported Chicago traffic crashes.
-Depends:
+Imports:
 	RSocrata,
 	tidyverse,
 	ggplot2,
