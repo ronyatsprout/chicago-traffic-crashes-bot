@@ -15,6 +15,8 @@ library(leaflet)
 library(colorspace)
 library(leaflegend)
 library(rtweet)
+library(MapColoring)
+
 
 dateQueryString <- paste0("crash_date between '",ymd(today()-2), "' and '", ymd(today()-1),"'")
 chicagoCrashPeople <- read.socrata(paste0("https://data.cityofchicago.org/resource/u6pd-qa9d.json?$where=",dateQueryString))
