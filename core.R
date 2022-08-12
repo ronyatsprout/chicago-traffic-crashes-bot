@@ -123,16 +123,6 @@ shpCityWards <- local({
 ## Generate city outline
 shpCityOutline <- rgeos::gUnaryUnion(as(shpCityWards, "SpatialPolygons"))
 
-##==============================================================================
-## CALCULATE WARD COLORS
-##==============================================================================
-
-## Get colors for each ward using 4 color algorithm
-pal <- colorspace::qualitative_hcl(n = 4, h = c(26, -264), c = 70, l = 70)
-colors <- pal[MapColoring::getColoring(shpCityWards)]
-
-## Plot to check if colors worked
-plot(shpCityWards, col=colors)
 
 
 ##==============================================================================
@@ -152,18 +142,6 @@ for(i in 1:length(shpCityWards@polygons)){
 labs <- data.table(do.call(rbind, labs))
 setnames(labs, c("x","y", "ward"))
 
-## Plot in leaflet
-leaflet() %>%
-  addProviderTiles(LEAFLET_TILES) %>%
-  addPolygons(data = shpCityOutline, fill = FALSE, color = "black", weight = 5) %>%
-  addPolygons(data = shpCityWards, fillColor = colors, fillOpacity = 0.5, 
-              weight = 0.5, label = ~paste("Ward:", ward) ) %>%
-  addLabelOnlyMarkers(data = labs, ~x, ~y, label = ~as.character(ward),
-                      labelOptions = labelOptions(noHide = TRUE,
-                                                  direction = "center",
-                                                  offset = c(0, 0), opacity = 1, 
-                                                  textsize = "12px", textOnly = TRUE, 
-                                                  style = list("font-style" = "bold")))
 
 ##==============================================================================
 ## LABEL WITH gCentroid LOCATIONS
@@ -176,20 +154,6 @@ leaflet() %>%
 labs <- as.data.frame(gCentroid(shpCityWards, byid = TRUE))
 labs$ward <- shpCityWards$ward
 
-## Plot in leaflet
-leaflet() %>%
-  addProviderTiles(LEAFLET_TILES) %>%
-  addPolygons(data = shpCityOutline, fill = FALSE, color = "black", weight = 5) %>%
-  addPolygons(data = shpCityWards, fillColor = colors, fillOpacity = 0.5, 
-              weight = 0.5, label = ~paste("Ward:", ward) ) %>%
-  addLabelOnlyMarkers(data = labs, ~x, ~y, label = ~as.character(ward),
-                      labelOptions = labelOptions(noHide = TRUE,
-                                                  direction = "center",
-                                                  offset = c(0, 0), opacity = 1, 
-                                                  textsize = "12px", textOnly = TRUE, 
-                                                  style = list("font-style" = "bold")))
-
-## That was better, but still way off for wards like 2, 27, 29, 41, etc
 
 ##==============================================================================
 ## LABEL WITH centroid FUNCTION
