@@ -1,16 +1,18 @@
 Package: chicagotrafficbots
 Description: Bot for reported Chicago traffic crashes.
+Depends:
+	R (>= 3.4)
 Imports:
-	RSocrata,
-	tidyverse,
-	ggplot2,
-	lubridate,
-	sf,
-	leaflet,
-	webshot2,
-	viridis,
-	rgeos,
-	leaflet,
-	colorspace,
-	leaflegend,
-	rtweet
+     RSocrata,
+     tidyverse,
+     ggplot2,
+     lubridate,
+     sf,
+     leaflet,
+     webshot2,
+     viridis,
+     rgeos,
+     leaflet,
+     colorspace,
+     leaflegend,
+     rtweet
