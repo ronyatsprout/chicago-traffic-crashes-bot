@@ -98,10 +98,10 @@
     },
     "Rcpp": {
       "Package": "Rcpp",
-      "Version": "1.0.7",
+      "Version": "1.0.9",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "dab19adae4440ae55aa8a9d238b246bb",
+      "Hash": "e9c08b94391e9f3f97355841229124f2",
       "Requirements": []
     },
     "askpass": {
@@ -927,7 +927,6 @@
         "leafpop",
         "png",
         "raster",
-        "satellite",
         "scales",
         "servr",
         "sf",
@@ -1039,10 +1038,10 @@
     },
     "plyr": {
       "Package": "plyr",
-      "Version": "1.8.6",
+      "Version": "1.8.7",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "ec0e5ab4e5f851f6ef32cd1d1984957f",
+      "Hash": "9c17c6ee41639ebdc1d7266546d3b627",
       "Requirements": [
         "Rcpp"
       ]
@@ -1152,8 +1151,7 @@
       "Hash": "43e3d05ce0266c336afab6bf17cde70c",
       "Requirements": [
         "Rcpp",
-        "sp",
-        "terra"
+        "sp"
       ]
     },
     "readr": {
@@ -1333,19 +1331,6 @@
         "wk"
       ]
     },
-    "satellite": {
-      "Package": "satellite",
-      "Version": "1.0.4",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "6bb739cedb7a0a9e5f9604d599223298",
-      "Requirements": [
-        "Rcpp",
-        "plyr",
-        "raster",
-        "terra"
-      ]
-    },
     "scales": {
       "Package": "scales",
       "Version": "1.2.0",
@@ -1470,16 +1455,6 @@
       "Hash": "90b28393209827327de889f49935140a",
       "Requirements": [
         "cpp11"
-      ]
-    },
-    "terra": {
-      "Package": "terra",
-      "Version": "1.4-22",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "7fe33699810538d4a17e954edf3ef84a",
-      "Requirements": [
-        "Rcpp"
       ]
     },
     "tibble": {
