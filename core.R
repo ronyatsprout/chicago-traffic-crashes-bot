@@ -371,7 +371,7 @@ numberOfCrashes <- nrow(chicagoCrashCrashes)
 firstTweetText <- paste0(ymd(today()-1), ": ", numberOfCrashes, ' Traffic Crashes w/ ', 
                            numberOfPeople, ' People Involved. #CrashMap')
 
-htmlwidgets::saveWidget(widget = crashCoordsMap, file = "maps/temp/crashCoordsMap/map.html")
+htmlwidgets::saveWidget(widget = crashCoordsMap, file = "maps/temp/crashCoordsMap/map.html", selfcontained = FALSE)
 webshot2::webshot(url = "maps/temp/crashCoordsMap/map.html", file = paste0("maps/","crashCoordsMap", "-", ymd(today()-1),".png"), 
                   delay = 1,
                   zoom = 3)
@@ -389,7 +389,7 @@ secondTweetText <- paste0('Concentration of Traffic Crashes by Ward.', '\n\nWors
                          '\n#ConcentrationOfCrashes')
 cat(secondTweetText)
 
-htmlwidgets::saveWidget(widget = concentrationOfCrashesMap, file = "maps/temp/concentrationOfCrashesMap/map.html")
+htmlwidgets::saveWidget(widget = concentrationOfCrashesMap, file = "maps/temp/concentrationOfCrashesMap/map.html", selfcontained = FALSE)
 webshot2::webshot(url = "maps/temp/concentrationOfCrashesMap/map.html", file = paste0("maps/","concentrationOfCrashesMap", "-", ymd(today()-1),".png"), 
                   delay = 1,
                   zoom = 3)
@@ -405,7 +405,7 @@ thirdTweetText <- paste0('Concentration of Traffic Injuries by Ward.', '\n\nWors
                           '#', head(crashesWardInjury %>% arrange(desc(Injuries)), n =5)[5,1], '\n',
                           '\n#ConcentrationOfInjuries')
 
-htmlwidgets::saveWidget(widget = concentrationOfInjuriesMap, file = "maps/temp/concentrationOfInjuriesMap/map.html")
+htmlwidgets::saveWidget(widget = concentrationOfInjuriesMap, file = "maps/temp/concentrationOfInjuriesMap/map.html", selfcontained = FALSE)
 webshot2::webshot(url = "maps/temp/concentrationOfInjuriesMap/map.html", file = paste0("maps/","concentrationOfInjuriesMap", "-", ymd(today()-1),".png"), 
                   delay = 1,
                   zoom = 3)
