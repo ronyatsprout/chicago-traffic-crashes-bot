@@ -398,15 +398,6 @@ crashCoordsMap <- leaflet(crashesWard, options = leafletOptions(zoomControl = FA
   addLegendFactor(pal = factorPal, shape = "circle",values =  ~factor(injury_super_class, levels = orderedInjuries), position = 'topright')
 
 
-auth <- rtweet_bot(
-  api_key       = Sys.getenv("TWITTER_API_KEY"),
-  api_secret    = Sys.getenv("TWITTER_API_KEY_SECRET"),
-  access_token  = Sys.getenv("TWITTER_ACCESS_TOKEN"),
-  access_secret = Sys.getenv("TWITTER_ACCESS_TOKEN_SECRET")
-)
-
-auth_as(auth)
-
 numberOfPeople <- nrow(chicagoCrashPeople)
 numberOfCrashes <- nrow(chicagoCrashCrashes)
 
@@ -489,6 +480,16 @@ fourthTweetText <- paste0('In summary, there were ',numberOfCrashes,' crashes wi
 'Of the injured: ',pedInjuries,' ped(s), ',bikeInjuries,' cyclist(s), ',passengerInjuries,' passengers, ',driverInjuries,' drivers.\n',
 
 'There were injuries in ',numberOfWardsWithInjuries,' wards and crashes in ',numberOfWardsWithCrashes,'. #Summary')
+
+
+auth <- rtweet_bot(
+  api_key       = Sys.getenv("TWITTER_API_KEY"),
+  api_secret    = Sys.getenv("TWITTER_API_KEY_SECRET"),
+  access_token  = Sys.getenv("TWITTER_ACCESS_TOKEN"),
+  access_secret = Sys.getenv("TWITTER_ACCESS_TOKEN_SECRET")
+)
+
+auth_as(auth)
 
 #first post
 post_tweet(firstTweetText, media = firstTweetImg,
