@@ -268,7 +268,6 @@ shpCityWards <- merge(shpCityWards, crashesWardCrash, by="ward") %>%
 pal <- colorNumeric(
   palette = "RdPu",
   domain = shpCityWards$Crashes)
-colors <- pal[MapColoring::getColoring(shpCityWards)]
 
 
 concentrationOfCrashesMap <- leaflet() %>%
@@ -296,7 +295,6 @@ concentrationOfCrashesMap <- leaflet() %>%
 pal <- colorNumeric(
   palette = "RdPu",
   domain = shpCityWards$Injuries)
-colors <- pal[MapColoring::getColoring(shpCityWards)]
 
 
 concentrationOfInjuriesMap <- leaflet() %>%
