@@ -57,7 +57,7 @@ crashesLongLats$ward <- as.integer(paste(apply(st_intersects(tt1_trans, pnts_tra
 crashesWard <- crashes %>%
   left_join(crashesLongLats %>% filter(!is.na(ward))) %>%
   mutate(ward = as.factor(ward)) %>%
-  mutate(injury_super_class = if_else(injury_classification == 'NO INDICATION OF INJURY', 'No Injury', 
+  mutate(injury_super_class = if_else(injury_classification == 'NO INDICATION OF INJURY' | is.na(injury_classification), 'No Injury', 
                                       if_else(injury_classification == 'NONINCAPACITATING INJURY' | injury_classification =='REPORTED, NOT EVIDENT', 'Injury',
                                               if_else(injury_classification =='INCAPACITATING INJURY', 'Severe Injury', 'Fatal')))) %>%
   mutate(latitude = as.numeric(latitude), longitude = as.numeric(longitude))
@@ -257,7 +257,6 @@ labs <- centroid(pol = shpCityWards,
                  ultimate = TRUE,
                  iterations = 150,
                  initial_width_step = .01)
-warnings()
 labs$ward <- shpCityWards$ward
 
 
@@ -332,6 +331,7 @@ getSize <- function(crashesWard) {
       .4
     } })
 }
+
 
 getColor <- function(crashesWard) {
   sapply(crashesWard$injury_super_class, function(injury_super_class) {
