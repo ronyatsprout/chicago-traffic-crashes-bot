@@ -1,4 +1,3 @@
-install.packages(c('RSocrata','tidyverse','ggplot2','lubridate','sp','leaflet','webshot2','viridis','rgeos','leaflet','colorspace','leaflegend','rtweet'))
 library(RSocrata)
 library(tidyverse)
 library(ggplot2)
