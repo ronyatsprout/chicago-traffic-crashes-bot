@@ -280,7 +280,7 @@ pal <- colorNumeric(
   domain = shpCityWards$Crashes)
 
 
-concentrationOfCrashesMap <- leaflet() %>%
+concentrationOfCrashesMap <- leaflet(options = leafletOptions(zoomControl = FALSE)) %>%
   addProviderTiles(LEAFLET_TILES) %>%
   addPolygons(data = shpCityOutline, fill = FALSE, color = "black", weight = 5) %>%
   addPolygons(data = shpCityWards, color = ~pal(Crashes), fillOpacity = 0.3, 
@@ -307,7 +307,7 @@ pal <- colorNumeric(
   domain = shpCityWards$Injuries)
 
 
-concentrationOfInjuriesMap <- leaflet() %>%
+concentrationOfInjuriesMap <- leaflet(options = leafletOptions(zoomControl = FALSE)) %>%
   addProviderTiles(LEAFLET_TILES) %>%
   addPolygons(data = shpCityOutline, fill = FALSE, color = "black", weight = 5) %>%
   addPolygons(data = shpCityWards, color = ~pal(Injuries), fillOpacity = 0.3, 
