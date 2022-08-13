@@ -27,7 +27,7 @@ chicagoCrashCrashes <- read.socrata(paste0("https://data.cityofchicago.org/resou
 
 if(nrow(chicagoCrashCrashes)<10){
   'DATA IS NOT READY YET!'
-  #quit(status=666)
+  quit(status=666)
 }
 
 wardMap <- read_sf("https://data.cityofchicago.org/resource/k9yb-bpqx.geojson")
