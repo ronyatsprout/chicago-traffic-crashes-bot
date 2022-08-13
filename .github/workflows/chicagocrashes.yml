@@ -2,7 +2,7 @@ name: chicagocrashes
 
 on:
   schedule:
-    - cron: '30 13 * * *'  
+    - cron: '15 13 * * *'  
 
 jobs:
   chicagocrashes-post:
