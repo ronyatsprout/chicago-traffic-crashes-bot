@@ -29,7 +29,7 @@ wardMap <- read_sf("https://data.cityofchicago.org/resource/k9yb-bpqx.geojson")
 alderList <- read.socrata("https://data.cityofchicago.org/resource/htai-wnw4.json")
 
 chicagoCrash <- chicagoCrashPeople %>%
-  left_join(chicagoCrashCrashes, by = c("crash_record_id", "crash_date"))
+  left_join(chicagoCrashCrashes)
 
 crashes <- chicagoCrash 
 #%>%
