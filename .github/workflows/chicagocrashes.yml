@@ -1,6 +1,8 @@
 name: chicagocrashes
 
-on: workflow_dispatch
+on:
+  schedule:
+    - cron: '30 01 * * *'  
 
 jobs:
   chicagocrashes-post:
