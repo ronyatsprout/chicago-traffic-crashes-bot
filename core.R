@@ -442,7 +442,7 @@ htmlwidgets::saveWidget(widget = crashCoordsMap, file = "maps/temp/crashCoordsMa
 webshot2::webshot(url = "maps/temp/crashCoordsMap/map.html", file = paste0("maps/","crashCoordsMap", "-", ymd(today()-1),".png"), 
                   delay = 1,
                   zoom = 3)
-firstTweetImg <- paste0(getwd(),"/maps/","crashCoordsMap", "-", ymd(today(tz = "America/Chicago")-1),".png")
+firstTweetImg <- paste0(getwd(),"/maps/","crashCoordsMap", "-", ymd(today()-1),".png")
 
 
 ###SECOND TWEET
@@ -457,10 +457,10 @@ secondTweetText <- paste0('Concentration of Traffic Crashes by Ward.', '\n\nWors
 cat(secondTweetText)
 
 htmlwidgets::saveWidget(widget = concentrationOfCrashesMap, file = "maps/temp/concentrationOfCrashesMap/map.html", selfcontained = FALSE)
-webshot2::webshot(url = "maps/temp/concentrationOfCrashesMap/map.html", file = paste0("maps/","concentrationOfCrashesMap", "-", ymd(today(tz = "America/Chicago")-1),".png"), 
+webshot2::webshot(url = "maps/temp/concentrationOfCrashesMap/map.html", file = paste0("maps/","concentrationOfCrashesMap", "-", ymd(today()-1),".png"), 
                   delay = 1,
                   zoom = 3)
-secondTweetImg <- paste0(getwd(),"/maps/","concentrationOfCrashesMap", "-", ymd(today(tz = "America/Chicago")-1),".png")
+secondTweetImg <- paste0(getwd(),"/maps/","concentrationOfCrashesMap", "-", ymd(today()-1),".png")
 
 ###THIRD TWEET
 head(crashesWardInjury %>% arrange(desc(Injuries)), n =5)[1,1]
@@ -473,10 +473,10 @@ thirdTweetText <- paste0('Concentration of Traffic Injuries by Ward.', '\n\nWors
                           '\n#ConcentrationOfInjuries')
 
 htmlwidgets::saveWidget(widget = concentrationOfInjuriesMap, file = "maps/temp/concentrationOfInjuriesMap/map.html", selfcontained = FALSE)
-webshot2::webshot(url = "maps/temp/concentrationOfInjuriesMap/map.html", file = paste0("maps/","concentrationOfInjuriesMap", "-", ymd(today(tz = "America/Chicago")-1),".png"), 
+webshot2::webshot(url = "maps/temp/concentrationOfInjuriesMap/map.html", file = paste0("maps/","concentrationOfInjuriesMap", "-", ymd(today()-1),".png"), 
                   delay = 1,
                   zoom = 3)
-thirdTweetImg <- paste0(getwd(),"/maps/","concentrationOfInjuriesMap", "-", ymd(today(tz = "America/Chicago")-1),".png")
+thirdTweetImg <- paste0(getwd(),"/maps/","concentrationOfInjuriesMap", "-", ymd(today()-1),".png")
 
 
 ###FOURTH TWEET
