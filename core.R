@@ -21,13 +21,12 @@ library(data.table)
 library(rmarkdown)
 
 
-dateQueryString <- paste0("crash_date between '",ymd(today()-2), "' and '", ymd(today()-1),"'")
+dateQueryString <- paste0("crash_date between '",ymd(today()-1), "' and '", ymd(today()-0),"'")
 chicagoCrashPeople <- read.socrata(paste0("https://data.cityofchicago.org/resource/u6pd-qa9d.json?$where=",dateQueryString))
 chicagoCrashCrashes <- read.socrata(paste0("https://data.cityofchicago.org/resource/85ca-t3if.json?$where=",dateQueryString))
 
 wardMap <- read_sf("https://data.cityofchicago.org/resource/k9yb-bpqx.geojson")
 alderList <- read.socrata("https://data.cityofchicago.org/resource/htai-wnw4.json")
-
 
 chicagoCrash <- chicagoCrashPeople %>%
   left_join(chicagoCrashCrashes, by = c("crash_record_id", "crash_date"))
@@ -65,11 +64,18 @@ crashesWard <- crashes %>%
 
 
 crashesPersonInjury <- crashesWard %>%
-  filter(injury_super_class != 'No Injury') %>%
+  filter(injury_super_class != 'No Injury' & injury_super_class != 'Fatal') %>%
   count(person_type, injury_super_class) %>%
   rename(Injuries = n)
 
 numberOfPeopleInjured <- sum(crashesPersonInjury$Injuries)
+
+crashesPersonFatal <- crashesWard %>%
+  filter(injury_super_class == 'Fatal') %>%
+  count(person_type, injury_super_class) %>%
+  rename(Fatalities = n)
+
+numberOfPeopleKilled <- sum(crashesPersonFatal$Fatalities)
 
 crashesNoInjury <- crashesWard %>%
   filter(injury_super_class == 'No Injury') %>%
@@ -367,9 +373,70 @@ crashCoordsMap <- leaflet(crashesWard, options = leafletOptions(zoomControl = FA
 
 numberOfPeople <- nrow(chicagoCrashPeople)
 numberOfCrashes <- nrow(chicagoCrashCrashes)
+##ALDERS SOCIALS
+alderSocialsData <- read.csv('data/alder_social_media_list.csv')
+
+alderSocials <- alderSocialsData %>%
+  mutate(twitter = trimws(if_else(twitter =='', alder, twitter)))
+
+pedSafetyCommitteeSocials <- alderSocials %>%
+  filter(committee_on_ped_safety != '') %>%
+  select(twitter)
+
+##FATALITY ALERT TWEET
+if(numberOfPeopleKilled>0){
+  fatalityAlertText <- "FATALITY ALERT! "
+  
+  fatalityTweetFlag <- TRUE
+  
+  fatalitiesByPersonType <- crashesPersonFatal %>%
+    group_by(person_type) %>% 
+    summarise(fatalities = sum(Fatalities))
+  
+  if('BICYCLE' %in% fatalitiesByPersonType$person_type){
+    bikeFatalities <- fatalitiesByPersonType$fatalities[fatalitiesByPersonType$person_type=='BICYCLE']
+  }else{
+    bikeFatalities <- 0
+  }
+  if('PEDESTRIAN' %in% fatalitiesByPersonType$person_type){
+    pedFatalities <- fatalitiesByPersonType$fatalities[fatalitiesByPersonType$person_type=='PEDESTRIAN']
+  }else{
+    pedFatalities <- 0
+  }
+  if('DRIVER' %in% fatalitiesByPersonType$person_type){
+    driverFatalities <- fatalitiesByPersonType$fatalities[fatalitiesByPersonType$person_type=='DRIVER']
+  }else{
+    driverFatalities <- 0
+  }
+  if('PASSENGER' %in% fatalitiesByPersonType$person_type){
+    passengerfatalities <- fatalitiesByPersonType$fatalities[fatalitiesByPersonType$person_type=='PASSENGER']
+  }else{
+    passengerFatalities <- 0
+  }
+  
+  #Ward(s) where people were killed
+  wardsWithFatalities <- crashesWard %>%
+    filter(injury_super_class == 'Fatal') %>%
+    select(ward) %>%
+    unique() %>%
+    mutate(ward = as.integer(ward))
+  
+  alderSocialsWithFatalies <- wardsWithFatalities %>%
+    left_join(alderSocials)
+  
+  wardsWithFatalitiesString <- paste(wardsWithFatalities$ward, collapse = ", ")
+  
+  fatalityAlertTweetText <- paste0('FATALITY ALERT: there was ',numberOfPeopleKilled, 
+                                   ' person(s) killed by traffic violence in Chicago on ', ymd(today()-1),'.\n\n',
+                                   'People died due to vehicular violence in these wards: ', wardsWithFatalities,'.\n\n',
+                                   paste(alderSocialsWithFatalies$twitter,collapse = ", "), ' people are being killed in your ward. #FatalityAlert')
+}else{
+  fatalityAlertText<-''
+  postFatalityTweet <- FALSE
+}
 
 firstTweetText <- paste0(ymd(today()-1), ": ", numberOfCrashes, ' Traffic Crashes w/ ', 
-                           numberOfPeople, ' People Involved. #CrashMap')
+                           numberOfPeople, ' People Involved. ',fatalityAlertText,'\n\n@ChicagoDOT make it stop. #ChicagoCrashMap')
 
 htmlwidgets::saveWidget(widget = crashCoordsMap, file = "maps/temp/crashCoordsMap/map.html", selfcontained = FALSE)
 webshot2::webshot(url = "maps/temp/crashCoordsMap/map.html", file = paste0("maps/","crashCoordsMap", "-", ymd(today()-1),".png"), 
@@ -381,11 +448,11 @@ firstTweetImg <- paste0(getwd(),"/maps/","crashCoordsMap", "-", ymd(today()-1),"
 ###SECOND TWEET
 head(crashesWardCrash %>% arrange(desc(Crashes)), n =5)[1,1]
 secondTweetText <- paste0('Concentration of Traffic Crashes by Ward.', '\n\nWorst 5 Wards:\n', 
-                         '#', head(crashesWardCrash %>% arrange(desc(Crashes)), n =5)[1,1], '\n',
-                         '#', head(crashesWardCrash %>% arrange(desc(Crashes)), n =5)[2,1], '\n',
-                         '#', head(crashesWardCrash %>% arrange(desc(Crashes)), n =5)[3,1], '\n',
-                         '#', head(crashesWardCrash %>% arrange(desc(Crashes)), n =5)[4,1], '\n',
-                         '#', head(crashesWardCrash %>% arrange(desc(Crashes)), n =5)[5,1], '\n',
+                         '#ward', head(crashesWardCrash %>% arrange(desc(Crashes)), n =5)[1,1], '\n',
+                         '#ward', head(crashesWardCrash %>% arrange(desc(Crashes)), n =5)[2,1], '\n',
+                         '#ward', head(crashesWardCrash %>% arrange(desc(Crashes)), n =5)[3,1], '\n',
+                         '#ward', head(crashesWardCrash %>% arrange(desc(Crashes)), n =5)[4,1], '\n',
+                         '#ward', head(crashesWardCrash %>% arrange(desc(Crashes)), n =5)[5,1], '\n',
                          '\n#ConcentrationOfCrashes')
 cat(secondTweetText)
 
@@ -398,11 +465,11 @@ secondTweetImg <- paste0(getwd(),"/maps/","concentrationOfCrashesMap", "-", ymd(
 ###THIRD TWEET
 head(crashesWardInjury %>% arrange(desc(Injuries)), n =5)[1,1]
 thirdTweetText <- paste0('Concentration of Traffic Injuries by Ward.', '\n\nWorst 5 Wards:\n', 
-                          '#', head(crashesWardInjury %>% arrange(desc(Injuries)), n =5)[1,1], '\n',
-                          '#', head(crashesWardInjury %>% arrange(desc(Injuries)), n =5)[2,1], '\n',
-                          '#', head(crashesWardInjury %>% arrange(desc(Injuries)), n =5)[3,1], '\n',
-                          '#', head(crashesWardInjury %>% arrange(desc(Injuries)), n =5)[4,1], '\n',
-                          '#', head(crashesWardInjury %>% arrange(desc(Injuries)), n =5)[5,1], '\n',
+                          '#ward', head(crashesWardInjury %>% arrange(desc(Injuries)), n =5)[1,1], '\n',
+                          '#ward', head(crashesWardInjury %>% arrange(desc(Injuries)), n =5)[2,1], '\n',
+                          '#ward', head(crashesWardInjury %>% arrange(desc(Injuries)), n =5)[3,1], '\n',
+                          '#ward', head(crashesWardInjury %>% arrange(desc(Injuries)), n =5)[4,1], '\n',
+                          '#ward', head(crashesWardInjury %>% arrange(desc(Injuries)), n =5)[5,1], '\n',
                           '\n#ConcentrationOfInjuries')
 
 htmlwidgets::saveWidget(widget = concentrationOfInjuriesMap, file = "maps/temp/concentrationOfInjuriesMap/map.html", selfcontained = FALSE)
@@ -414,7 +481,7 @@ thirdTweetImg <- paste0(getwd(),"/maps/","concentrationOfInjuriesMap", "-", ymd(
 
 ###FOURTH TWEET
 
-injuriesByPersonType <- crashesPersonInjury %>% 
+injuriesByPersonType <- crashesPersonInjury %>%
   group_by(person_type) %>% 
   summarise(injuries = sum(Injuries))
 
@@ -462,6 +529,16 @@ auth_as(auth)
 post_tweet(firstTweetText, media = firstTweetImg,
            media_alt_text = "Coordinates of all individuals involved in a reported traffic crash.")
 
+##fatality tweet
+if(fatalityTweetFlag == TRUE){
+  ## lookup status_id
+  my_timeline <- get_my_timeline()
+  ## ID for reply
+  reply_id <- my_timeline$id_str[1]
+  ## post reply
+  post_tweet(fatalityAlertTweetText, in_reply_to_status_id = reply_id)
+}
+
 ## lookup status_id
 my_timeline <- get_my_timeline()
 ## ID for reply
@@ -488,3 +565,12 @@ reply_id <- my_timeline$id_str[1]
 post_tweet(fourthTweetText,
            in_reply_to_status_id = reply_id)
 
+
+lastTweet <- paste0('Comm. on Ped Safety - ', paste(pedSafetyCommitteeSocials$twitter,collapse = ", "))
+
+## lookup status_id
+my_timeline <- get_my_timeline()
+## ID for reply
+reply_id <- my_timeline$id_str[1]
+## post reply
+post_tweet(lastTweet, in_reply_to_status_id = reply_id)
