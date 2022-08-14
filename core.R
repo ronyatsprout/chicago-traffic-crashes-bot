@@ -69,13 +69,13 @@ checkIfDataRefreshed <- function(dateQueryString){
   }
 }
 
-checkIfDataRefreshed(dateQueryString)
+dataReadyFlag<-checkIfDataRefreshed(dateQueryString)
 
 if(dataReadyFlag == TRUE){
   chicagoCrashPeople <- read.socrata(paste0("https://data.cityofchicago.org/resource/u6pd-qa9d.json?$where=",dateQueryString))
   chicagoCrashCrashes <- read.socrata(paste0("https://data.cityofchicago.org/resource/85ca-t3if.json?$where=",dateQueryString))
 }else{
-  checkIfDataRefreshed(dateQueryString)
+  dataReadyFlag<-checkIfDataRefreshed(dateQueryString)
 }
 
 
