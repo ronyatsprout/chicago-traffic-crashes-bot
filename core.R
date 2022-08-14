@@ -37,6 +37,7 @@ sleep <- function(x){
 }
 
 numberOfChecks <- 0
+dataReadyFlag <- FALSE
 
 checkIfDataRefreshed <- function(dateQueryString){
   chicagoCrashPeople <- read.socrata(paste0("https://data.cityofchicago.org/resource/u6pd-qa9d.json?$where=",dateQueryString))
