@@ -22,13 +22,61 @@ library(rmarkdown)
 
 
 dateQueryString <- paste0("crash_date between '",ymd(today(tz = "America/Chicago")-1), "' and '", ymd(today(tz = "America/Chicago")-0),"'")
-chicagoCrashPeople <- read.socrata(paste0("https://data.cityofchicago.org/resource/u6pd-qa9d.json?$where=",dateQueryString))
-chicagoCrashCrashes <- read.socrata(paste0("https://data.cityofchicago.org/resource/85ca-t3if.json?$where=",dateQueryString))
 
-if(nrow(chicagoCrashCrashes)<10){
-  'DATA IS NOT READY YET!'
-  quit(status=666)
+##Authenticate Twitter
+auth <- rtweet_bot(
+  api_key       = Sys.getenv("TWITTER_API_KEY"),
+  api_secret    = Sys.getenv("TWITTER_API_KEY_SECRET"),
+  access_token  = Sys.getenv("TWITTER_ACCESS_TOKEN"),
+  access_secret = Sys.getenv("TWITTER_ACCESS_TOKEN_SECRET")
+)
+
+##Check if Data is ready
+sleep <- function(x){
+  Sys.sleep(x)
 }
+
+numberOfChecks <- 0
+
+checkIfDataRefreshed <- function(dateQueryString){
+  chicagoCrashPeople <- read.socrata(paste0("https://data.cityofchicago.org/resource/u6pd-qa9d.json?$where=",dateQueryString))
+  chicagoCrashCrashes <- read.socrata(paste0("https://data.cityofchicago.org/resource/85ca-t3if.json?$where=",dateQueryString))
+  if(nrow(chicagoCrashCrashes)<10 | nrow(chicagoCrashPeople)<10){
+    dataReadyFlag <- FALSE
+    if(numberOfChecks == 0){
+      auth_as(auth)
+      ## post reply
+      delayTweet<-post_tweet("Beep Boop Bop, I'm still waiting for CPD to upload data. Please hold.")
+      numberOfChecks <- numberOfChecks +1 
+    }else{
+      numberOfChecks <- numberOfChecks +1 
+    }
+    message(paste0("DATA IS NOT READY YET! As of ",now(tz='America/Chicago')))
+    sleep(900)
+    checkIfDataRefreshed(dateQueryString)
+  }else{
+    if(numberOfChecks > 0){
+      ##DELETE data check tweet
+      auth_as(auth)
+      my_timeline <- get_my_timeline()
+      ## ID for destruction
+      destroy_id <- my_timeline$id_str[1]
+      post_destroy(destroy_id)
+    }
+    dataReadyFlag <- TRUE
+    return(dataReadyFlag)
+  }
+}
+
+checkIfDataRefreshed(dateQueryString)
+
+if(dataReadyFlag == TRUE){
+  chicagoCrashPeople <- read.socrata(paste0("https://data.cityofchicago.org/resource/u6pd-qa9d.json?$where=",dateQueryString))
+  chicagoCrashCrashes <- read.socrata(paste0("https://data.cityofchicago.org/resource/85ca-t3if.json?$where=",dateQueryString))
+}else{
+  checkIfDataRefreshed(dateQueryString)
+}
+
 
 wardMap <- read_sf("https://data.cityofchicago.org/resource/k9yb-bpqx.geojson")
 alderList <- read.socrata("https://data.cityofchicago.org/resource/htai-wnw4.json")
@@ -398,26 +446,34 @@ if(numberOfPeopleKilled>0){
     group_by(person_type) %>% 
     summarise(fatalities = sum(Fatalities))
   
+  fatalityPersonTypes<-data.frame()
+  
   if('BICYCLE' %in% fatalitiesByPersonType$person_type){
     bikeFatalities <- fatalitiesByPersonType$fatalities[fatalitiesByPersonType$person_type=='BICYCLE']
+    fatalityPersonTypes<-rbind(fatalityPersonTypes,"cyclist")
   }else{
     bikeFatalities <- 0
   }
   if('PEDESTRIAN' %in% fatalitiesByPersonType$person_type){
     pedFatalities <- fatalitiesByPersonType$fatalities[fatalitiesByPersonType$person_type=='PEDESTRIAN']
+    fatalityPersonTypes<-rbind(fatalityPersonTypes, "pedestrian")
   }else{
     pedFatalities <- 0
   }
   if('DRIVER' %in% fatalitiesByPersonType$person_type){
     driverFatalities <- fatalitiesByPersonType$fatalities[fatalitiesByPersonType$person_type=='DRIVER']
+    fatalityPersonTypes<-rbind(fatalityPersonTypes, "driver")
   }else{
     driverFatalities <- 0
   }
   if('PASSENGER' %in% fatalitiesByPersonType$person_type){
     passengerfatalities <- fatalitiesByPersonType$fatalities[fatalitiesByPersonType$person_type=='PASSENGER']
+    fatalityPersonTypes<-rbind(fatalityPersonTypes, "passenger")
   }else{
     passengerFatalities <- 0
   }
+  
+  fatalityPersonTypesString <- paste(fatalityPersonTypes, collapse = ", ")
   
   #Ward(s) where people were killed
   wardsWithFatalities <- crashesWard %>%
@@ -433,11 +489,11 @@ if(numberOfPeopleKilled>0){
   
   fatalityAlertTweetText <- paste0('FATALITY ALERT: there was ',numberOfPeopleKilled, 
                                    ' person(s) killed by traffic violence in Chicago on ', ymd(today(tz = "America/Chicago")-1),'.\n\n',
-                                   'People died due to vehicular violence in these wards: ', wardsWithFatalities,'.\n\n',
+                                   'People (including ',fatalityPersonTypesString ,') died due to vehicular violence in these wards: ', wardsWithFatalities,'.\n\n',
                                    paste(alderSocialsWithFatalies$twitter,collapse = ", "), ' people are being killed in your ward. #FatalityAlert')
 }else{
   fatalityAlertText<-''
-  postFatalityTweet <- FALSE
+  fatalityTweetFlag <- FALSE
 }
 
 firstTweetText <- paste0(ymd(today(tz = "America/Chicago")-1), ": ", numberOfCrashes, ' Traffic Crashes w/ ', 
@@ -520,15 +576,6 @@ fourthTweetText <- paste0('In summary, there were ',numberOfCrashes,' crashes wi
 
 'There were injuries in ',numberOfWardsWithInjuries,' wards and crashes in ',numberOfWardsWithCrashes,'. #Summary')
 
-
-
-
-auth <- rtweet_bot(
-  api_key       = Sys.getenv("TWITTER_API_KEY"),
-  api_secret    = Sys.getenv("TWITTER_API_KEY_SECRET"),
-  access_token  = Sys.getenv("TWITTER_ACCESS_TOKEN"),
-  access_secret = Sys.getenv("TWITTER_ACCESS_TOKEN_SECRET")
-)
 
 auth_as(auth)
 
