@@ -187,36 +187,6 @@ shpCityOutline <- rgeos::gUnaryUnion(as(shpCityWards, "SpatialPolygons"))
 
 
 ##==============================================================================
-## LABEL WITH DEFAULT LABEL LOCATIONS
-##==============================================================================
-
-## Extract labels by pulling "labpt"
-## This is how you *should* be able to do it
-# labs <- sapply(shpCityWards@polygons, `@`, "labpt")
-
-## Extract labels by pulling "labpt"
-labs <- vector("list", length(shpCityWards@polygons))
-for(i in 1:length(shpCityWards@polygons)){
-  labs[[i]] <- c(shpCityWards@polygons[[i]]@labpt,
-                 as.numeric(shpCityWards@polygons[[i]]@ID))
-}
-labs <- data.table(do.call(rbind, labs))
-setnames(labs, c("x","y", "ward"))
-
-
-##==============================================================================
-## LABEL WITH gCentroid LOCATIONS
-##==============================================================================
-
-## That wasn't too great. 
-## Try with creating labs with gCentroid
-
-## Create labels
-labs <- as.data.frame(gCentroid(shpCityWards, byid = TRUE))
-labs$ward <- shpCityWards$ward
-
-
-##==============================================================================
 ## LABEL WITH centroid FUNCTION
 ##==============================================================================
 ## Source for functions:
