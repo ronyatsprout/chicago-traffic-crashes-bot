@@ -547,22 +547,22 @@ injuriesByPersonType <- crashesPersonInjury %>%
   group_by(person_type) %>% 
   summarise(injuries = sum(Injuries))
 
-if(injuriesByPersonType$injuries[injuriesByPersonType$person_type=='BICYCLE']>0){
+if('BICYCLE' %in% injuriesByPersonType$person_type){
   bikeInjuries <- injuriesByPersonType$injuries[injuriesByPersonType$person_type=='BICYCLE']
 }else{
   bikeInjuries <- 0
 }
-if(injuriesByPersonType$injuries[injuriesByPersonType$person_type=='PEDESTRIAN']>0){
+if('PEDESTRIAN' %in% injuriesByPersonType$person_type){
   pedInjuries <- injuriesByPersonType$injuries[injuriesByPersonType$person_type=='PEDESTRIAN']
 }else{
   pedInjuries <- 0
 }
-if(injuriesByPersonType$injuries[injuriesByPersonType$person_type=='DRIVER']>0){
+if('DRIVER' %in% injuriesByPersonType$person_type{
   driverInjuries <- injuriesByPersonType$injuries[injuriesByPersonType$person_type=='DRIVER']
 }else{
   driverInjuries <- 0
 }
-if(injuriesByPersonType$injuries[injuriesByPersonType$person_type=='PASSENGER']>0){
+if('PASSENGER' %in% injuriesByPersonType$person_type){
   passengerInjuries <- injuriesByPersonType$injuries[injuriesByPersonType$person_type=='PASSENGER']
 }else{
   passengerInjuries <- 0
