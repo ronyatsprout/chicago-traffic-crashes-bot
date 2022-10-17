@@ -527,7 +527,7 @@ if('PEDESTRIAN' %in% injuriesByPersonType$person_type){
 }else{
   pedInjuries <- 0
 }
-if('DRIVER' %in% injuriesByPersonType$person_type{
+if('DRIVER' %in% injuriesByPersonType$person_type){
   driverInjuries <- injuriesByPersonType$injuries[injuriesByPersonType$person_type=='DRIVER']
 }else{
   driverInjuries <- 0
