@@ -21,7 +21,10 @@ library(data.table)
 library(rmarkdown)
 
 
-dateQueryString <- paste0("crash_date between '",ymd(today(tz = "America/Chicago")-1), "' and '", ymd(today(tz = "America/Chicago")-0),"'")
+startDate <- ymd(today(tz = "America/Chicago")-1)
+endDate <- ymd(today(tz = "America/Chicago")-0) 
+
+dateQueryString <- paste0("crash_date between '",startDate, "' and '", endDate,"'")
 
 ##Authenticate Twitter
 auth <- rtweet_bot(
@@ -47,7 +50,7 @@ checkIfDataRefreshed <- function(dateQueryString){
     if(numberOfChecks == 0){
       auth_as(auth)
       ## post reply
-      delayTweet<-post_tweet("Beep Boop Bop, I'm still waiting for CPD to upload data. Please hold.")
+      delayTweet<-post_tweet(paste0("Beep Boop Bop, I'm still waiting for CPD to upload data for ",startDate,". Please hold."))
       numberOfChecks <- numberOfChecks +1 
     }else{
       numberOfChecks <- numberOfChecks +1 
@@ -459,7 +462,7 @@ if(numberOfPeopleKilled>0){
   wardsWithFatalitiesString <- paste(wardsWithFatalities$ward, collapse = ", ")
   
   fatalityAlertTweetText <- paste0('FATALITY ALERT: there was ',numberOfPeopleKilled, 
-                                   ' person(s) killed by traffic violence in Chicago on ', ymd(today(tz = "America/Chicago")-1),'.\n\n',
+                                   ' person(s) killed by traffic violence in Chicago on ', startDate,'.\n\n',
                                    'People (including ',fatalityPersonTypesString ,') died due to vehicular violence in these wards: ', wardsWithFatalities,'.\n\n',
                                    paste(alderSocialsWithFatalies$twitter,collapse = ", "), ' people are being killed in your ward. #FatalityAlert')
 }else{
@@ -467,14 +470,14 @@ if(numberOfPeopleKilled>0){
   fatalityTweetFlag <- FALSE
 }
 
-firstTweetText <- paste0(ymd(today(tz = "America/Chicago")-1), ": ", numberOfCrashes, ' Traffic Crashes w/ ', 
+firstTweetText <- paste0(startDate, ": ", numberOfCrashes, ' Traffic Crashes w/ ', 
                            numberOfPeople, ' People Involved. ',fatalityAlertText,'\n\n@ChicagoDOT make it stop. #ChicagoCrashMap')
 
 htmlwidgets::saveWidget(widget = crashCoordsMap, file = "maps/temp/crashCoordsMap/map.html", selfcontained = FALSE)
-webshot2::webshot(url = "maps/temp/crashCoordsMap/map.html", file = paste0("maps/","crashCoordsMap", "-", ymd(today(tz = "America/Chicago")-1),".png"), 
+webshot2::webshot(url = "maps/temp/crashCoordsMap/map.html", file = paste0("maps/","crashCoordsMap", "-", startDate,".png"), 
                   delay = 1,
                   zoom = 3)
-firstTweetImg <- paste0(getwd(),"/maps/","crashCoordsMap", "-", ymd(today(tz = "America/Chicago")-1),".png")
+firstTweetImg <- paste0(getwd(),"/maps/","crashCoordsMap", "-", startDate,".png")
 
 
 ###SECOND TWEET
@@ -489,10 +492,10 @@ secondTweetText <- paste0('Concentration of Traffic Crashes by Ward.', '\n\nWors
 cat(secondTweetText)
 
 htmlwidgets::saveWidget(widget = concentrationOfCrashesMap, file = "maps/temp/concentrationOfCrashesMap/map.html", selfcontained = FALSE)
-webshot2::webshot(url = "maps/temp/concentrationOfCrashesMap/map.html", file = paste0("maps/","concentrationOfCrashesMap", "-", ymd(today(tz = "America/Chicago")-1),".png"), 
+webshot2::webshot(url = "maps/temp/concentrationOfCrashesMap/map.html", file = paste0("maps/","concentrationOfCrashesMap", "-", startDate,".png"), 
                   delay = 1,
                   zoom = 3)
-secondTweetImg <- paste0(getwd(),"/maps/","concentrationOfCrashesMap", "-", ymd(today(tz = "America/Chicago")-1),".png")
+secondTweetImg <- paste0(getwd(),"/maps/","concentrationOfCrashesMap", "-", startDate,".png")
 
 ###THIRD TWEET
 head(crashesWardInjury %>% arrange(desc(Injuries)), n =5)[1,1]
@@ -505,10 +508,10 @@ thirdTweetText <- paste0('Concentration of Traffic Injuries by Ward.', '\n\nWors
                           '\n#ConcentrationOfInjuries')
 
 htmlwidgets::saveWidget(widget = concentrationOfInjuriesMap, file = "maps/temp/concentrationOfInjuriesMap/map.html", selfcontained = FALSE)
-webshot2::webshot(url = "maps/temp/concentrationOfInjuriesMap/map.html", file = paste0("maps/","concentrationOfInjuriesMap", "-", ymd(today(tz = "America/Chicago")-1),".png"), 
+webshot2::webshot(url = "maps/temp/concentrationOfInjuriesMap/map.html", file = paste0("maps/","concentrationOfInjuriesMap", "-", startDate,".png"), 
                   delay = 1,
                   zoom = 3)
-thirdTweetImg <- paste0(getwd(),"/maps/","concentrationOfInjuriesMap", "-", ymd(today(tz = "America/Chicago")-1),".png")
+thirdTweetImg <- paste0(getwd(),"/maps/","concentrationOfInjuriesMap", "-", startDate,".png")
 
 
 ###FOURTH TWEET
@@ -599,3 +602,4 @@ my_timeline <- get_my_timeline()
 reply_id <- my_timeline$id_str[1]
 ## post reply
 post_tweet(lastTweet, in_reply_to_status_id = reply_id)
+
