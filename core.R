@@ -1,24 +1,28 @@
+install.packages("pacman")
+library(pacman)
+p_load(devtools
+       , RSocrata
+       , tidyverse
+       , ggplot2
+       , lubridate
+       , leaflet
+       , webshot2
+       , viridis
+       , leaflet
+       , colorspace
+       , leaflegend
+       , rtweet
+       , data.table
+       , rmarkdown)
 install.packages("rgeos", repos="http://R-Forge.R-project.org", type="source")
 install.packages("rgdal", repos="http://R-Forge.R-project.org", type="source")
-library(devtools)
 install_github("r-spatial/sf", configure.args = "--with-proj-lib=/usr/local/lib/")
-library(RSocrata)
-library(tidyverse)
-library(ggplot2)
-library(lubridate)
-library(sf)
-library(leaflet)
-library(webshot2)
-library(viridis)
-library(rgeos)
-library(leaflet)
-library(colorspace)
-library(leaflegend)
-library(rtweet)
 install_github("hunzikp/MapColoring")
+library(rgeos)
+library(rgdal)
+library(sf)
 library(MapColoring)
-library(data.table)
-library(rmarkdown)
+
 
 
 startDate <- ymd(today(tz = "America/Chicago")-1)
