@@ -19,6 +19,5 @@ jobs:
          brew install gdal proj geos
          export LDFLAGS="-L/usr/local/opt/libpq/lib"
          export CPPFLAGS="-I/usr/local/opt/libpq/include"
-      - uses: r-lib/actions/setup-renv@v2
       - name: Create and post tweet
         run: Rscript core.R
