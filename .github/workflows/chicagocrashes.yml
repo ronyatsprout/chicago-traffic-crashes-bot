@@ -1,7 +1,9 @@
 name: chicagocrashes
 
-on: workflow_dispatch
-
+on:
+  schedule:
+    - cron: '30 19 * * *'  
+    
 jobs:
   chicagocrashes-post:
     runs-on: macOS-latest
