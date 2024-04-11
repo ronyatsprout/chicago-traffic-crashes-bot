@@ -1,8 +1,6 @@
 name: chicagocrashes
 
-on:
-  schedule:
-    - on: workflow_dispatch
+on: workflow_dispatch
     
 jobs:
   chicagocrashes-post:
